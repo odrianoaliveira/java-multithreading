@@ -2,7 +2,10 @@ package com.adriano.threading.pubsub;
 
 import java.math.BigInteger;
 import java.util.Set;
-import java.util.concurrent.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 
 
 public class PubSubApp {
@@ -44,9 +47,7 @@ public class PubSubApp {
                 System.out.println("Sending a poison pill...");
                 queue.put(-1); //Send a poison pill to the first consumer
                 queue.put(-1); //Send another poison pill to the second consumer
-                System.out.println("Poison pill was sent.");
-                Thread.currentThread().interrupt();
-                System.out.println("Producer was interrupted.");
+                System.out.println("Poison pills were sent.");
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -71,7 +72,6 @@ public class PubSubApp {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            Thread.currentThread().interrupt();
         }
 
         public static BigInteger factorial(int n) {
