@@ -1,5 +1,6 @@
 package com.adriano.threading.atomic;
 
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
 
 /**
@@ -11,23 +12,49 @@ import java.util.stream.IntStream;
  */
 public class SynchronizedCounterApp {
 
-    public static final int NUM_THREADS = 100;
+    public static final int NUM_THREADS = 1000;
     private static final int INCREMENTS_PER_THREAD = 10_000;
 
-    private static final SynchronizedCounter counter = new SynchronizedCounter();
-
     public static void main(String[] args) {
-
+        // Synchronized
+        var synchronizedCounter = new SynchronizedCounter();
         long startTime = System.nanoTime();
-        runThreads();
+        runSynchronizedThreads(synchronizedCounter);
         long elapsedNanos = System.nanoTime() - startTime;
         System.out.println("Elapsed time in millis " + (elapsedNanos / 1_000_000));
 
-        assert counter.getCounter() == NUM_THREADS * INCREMENTS_PER_THREAD;
-        System.out.println("The counter value is " + counter.getCounter());
+        if (!(synchronizedCounter.getCounter() == NUM_THREADS * INCREMENTS_PER_THREAD)) {
+            System.err.println("The SynchronizedCounter has a bug");
+        }
+        System.out.println("The counter value is " + synchronizedCounter.getCounter());
+
+        // Atomic
+        var atomicCounter = new AtomicCounter();
+        long startTime2 = System.nanoTime();
+        runAtomicThreads(atomicCounter);
+        long elapsedNanos2 = System.nanoTime() - startTime2;
+        System.out.println("Elapsed time in millis " + (elapsedNanos2 / 1_000_000));
+
+        if (!(atomicCounter.getCounter() == NUM_THREADS * INCREMENTS_PER_THREAD)) {
+            System.err.println("The AtomicCounter has a bug");
+        }
+        System.out.println("The counter value is " + atomicCounter.getCounter());
     }
 
-    private static void runThreads() {
+    private static void runAtomicThreads(ICounter counter) {
+        IntStream.range(0, NUM_THREADS)
+                .mapToObj(threadNum -> new Thread(new Counter(counter), "CounterThread-" + threadNum))
+                .peek(Thread::start)
+                .forEach(t -> {
+                    try {
+                        t.join();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+    }
+
+    private static void runSynchronizedThreads(ICounter counter) {
         IntStream.range(0, NUM_THREADS)
                 .mapToObj(threadNum -> new Thread(new Counter(counter), "CounterThread-" + threadNum))
                 .peek(Thread::start)
@@ -41,9 +68,9 @@ public class SynchronizedCounterApp {
     }
 
     static class Counter implements Runnable {
-        private final SynchronizedCounter counter;
+        private final ICounter counter;
 
-        Counter(SynchronizedCounter counter) {
+        Counter(ICounter counter) {
             this.counter = counter;
         }
 
@@ -55,14 +82,35 @@ public class SynchronizedCounterApp {
         }
     }
 
-    static class SynchronizedCounter {
-        private static long counter = 0;
+    interface ICounter {
+        void increment();
 
-        public synchronized void increment() {
-            counter++;
-            System.out.println("Thread " + Thread.currentThread().getName() + " incremented counter.");
+        long getCounter();
+    }
+
+    static class AtomicCounter implements ICounter {
+        private static final AtomicLong counter = new AtomicLong(0);
+
+        @Override
+        public void increment() {
+            counter.incrementAndGet();
         }
 
+        @Override
+        public long getCounter() {
+            return counter.get();
+        }
+    }
+
+    static class SynchronizedCounter implements ICounter {
+        private static long counter = 0;
+
+        @Override
+        public synchronized void increment() {
+            counter++;
+        }
+
+        @Override
         public synchronized long getCounter() {
             return counter;
         }
