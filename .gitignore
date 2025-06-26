@@ -22,9 +22,16 @@ hs_err_pid*
 
 # IntelliJ IDEA
 .idea/
+**/.idea/
+
 *.iml
+**/*.iml
+
 out/
+**/out/
+
 build/
+**/build/
 
 # Eclipse
 .project
