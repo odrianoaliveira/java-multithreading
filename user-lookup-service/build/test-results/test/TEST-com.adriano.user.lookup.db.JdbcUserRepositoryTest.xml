@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.adriano.user.lookup.db.JdbcUserRepositoryTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-06-26T13:10:51.217Z" hostname="ASO" time="0.157">
-  <properties/>
-  <testcase name="testSaveAndFindUser()" classname="com.adriano.user.lookup.db.JdbcUserRepositoryTest" time="0.157"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
