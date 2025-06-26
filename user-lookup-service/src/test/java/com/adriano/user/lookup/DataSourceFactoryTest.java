@@ -1,5 +1,6 @@
 package com.adriano.user.lookup;
 
+import com.adriano.user.lookup.db.DataSourceFactory;
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package com.adriano.user.lookup;
+package com.adriano.user.lookup.db;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
