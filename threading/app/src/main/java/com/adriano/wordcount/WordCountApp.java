@@ -1,4 +1,4 @@
-package com.adriano.threading.wordcount;
+package com.adriano.wordcount;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

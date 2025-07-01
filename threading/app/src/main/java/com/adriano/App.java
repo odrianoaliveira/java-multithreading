@@ -1,4 +1,4 @@
-package com.adriano.threading;
+package com.adriano;
 
 public class App {
 

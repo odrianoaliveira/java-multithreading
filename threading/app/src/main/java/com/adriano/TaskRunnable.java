@@ -1,6 +1,7 @@
-package com.adriano.threading;
+package com.adriano;
 
 public class TaskRunnable implements Runnable{
+
     @Override
     public void run() {
         for (int i = 0; i < 5; i++) {
