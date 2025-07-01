@@ -29,7 +29,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class CountDownLatchChallenge {
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         CountDownLatchChallenge challenge = new CountDownLatchChallenge(3);
         challenge.startWorkers();
         challenge.waitForWorkers();
